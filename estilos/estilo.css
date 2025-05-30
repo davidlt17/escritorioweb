@@ -1,0 +1,109 @@
+body {
+    background-color: #736cd4;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+
+}
+
+#desktop {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* <-- Esto los alinea a la izquierda */
+    align-items: flex-start;     /* Opcional: los pega arriba también */
+    height: calc(100vh - 50px); /* Ajusta el alto para que no cubra el taskbar */
+    gap: 24px; /* Ajusta el espacio entre iconos */
+    padding: 20px;   /* Opcional, para separar del borde */
+}
+
+#taskbar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(to top, #d4d0c8 90%, #f3f3f3 100%);
+    border-top: 2px solid #b0b0b0;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    padding-left: 8px;
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 20px;
+    width: 64px;
+    height: 64px;
+    text-align: left;
+    font-size: smaller;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.icon:hover {
+    transform: translateY(-6px) scale(1.08) rotate(-3deg);
+    box-shadow: 0 8px 24px 0 rgba(60,60,120,0.18);
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.icon-image{
+    width: 48px;
+    height: 48px;
+}
+
+.icon-image img,
+.icon-image svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.icon span {
+  padding: 5px 5px;
+  margin: 0 auto;
+}
+
+.icon-taskbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 12px 4px 4px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.icon-taskbar:hover {
+    background: #e0e0e0;
+}
+
+.icon-image-taskbar {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-image-taskbar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.icon-taskbar span {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1rem;
+    color: #333;
+    margin-left: 4px;
+    user-select: none;
+}
