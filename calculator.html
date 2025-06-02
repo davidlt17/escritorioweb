@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Retro-Calculator</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 350px;
+      height: 520px;
+      box-sizing: border-box;
+      overflow: hidden;
+      background: transparent;
+    }
+    body {
+      width: 350px;
+      height: 520px;
+      background: transparent;
+    }
+    #calculator {
+      background-color: grey;
+      margin: 0;
+      width: 350px;
+      height: 520px;
+      box-shadow: 2px 2px black;
+      display: grid;
+      grid-template-columns: 230px 120px;
+      grid-template-rows: 40px 130px 40px 300px;
+      grid-template-areas: 
+        "title title"
+        "display display"
+        "cleaner cleaner"
+        "numbers signs";
+      position: relative;
+    }
+    #title-bar {
+      grid-area: title;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 5px;
+      padding: 0 8px 0 8px;
+      background: transparent;
+      position: relative;
+    }
+    #title {
+      margin: 0;
+      font-size: 18px;
+      user-select: none;
+      cursor: move;
+    }
+    .draggable {
+      cursor: move;
+      user-select: none;
+    }
+    .close-btn {
+      background: #505050;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      width: 28px;
+      height: 28px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: background 0.2s;
+    }
+    .close-btn:hover {
+      background: #ff4444;
+    }
+    #display {
+      background-color: rgb(224, 224, 224);
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      margin: auto;
+      width: 300px;
+      height: 100px;
+      box-shadow: -2px -2px black;
+      grid-area: display;
+    }
+
+    .rows {
+      height: auto;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    #cleaner {
+      height: auto;
+      display: flex;
+      grid-area: cleaner;
+    }
+
+    .clean {
+      background-color: rgb(136, 136, 136);
+      text-align: center;
+      font-size: x-small;
+      margin: auto;
+      width: 110px;
+      height: 40px;
+      border: 1px solid black;
+      box-shadow: 1px 1px black;
+    }
+
+    .clean:active {
+      transform: translateY(1px);
+    }
+
+    #numbers {
+      display: grid;
+      margin-left: 20px;
+      grid-row-gap: 25px;
+      grid-template-columns: 50px 50px 50px;
+      grid-template-rows: 50px 50px 50px 50px;
+      justify-content: space-around;
+      align-self: center;
+      grid-area: numbers;
+    }
+
+    .num {
+      width: 50px;
+      height: 50px;
+      background-color: burlywood;
+      border: 1px solid black;
+      text-align: center;
+      box-shadow: 1px 1px black;
+    }
+
+    .num:active {
+      transform: translateY(1px);
+    }
+
+    #signs {
+      grid-row-gap: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      grid-area: signs;
+    }
+
+    .sign {
+      background-color: #8a5cb5;
+      text-align: center;
+      height: 55px;
+      width: 55px;
+      border: 1px solid black;
+      box-shadow: 1px 1px black;
+    }
+
+    .sign:active {
+      transform: translateY(1px);
+    }
+
+    #equal {
+      width: 50px;
+      height: 50px;
+      background-color: burlywood;
+      border: 1px solid black;
+      text-align: center;
+      box-shadow: 1px 1px black;
+    }
+
+    #equal:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body>
+  <div id="calculator">
+    
+    <div id="display">
+      <h1 id="expression" class="rows">0</h1>
+      <h1 id="main" class="rows" data-value="">0</h1>
+    </div>
+    <div id="cleaner">
+      <div id="del" class="clean"><h2>Delete</h2></div>
+      <div id="clear" class="clean"><h2>Erase All</h2></div>
+    </div>
+    <div id="numbers">
+      <div id="one" class="num" data-value="1"><h2>1</h2></div>
+      <div id="two" class="num" data-value="2"><h2>2</h2></div>
+      <div id="three" class="num" data-value="3"><h2>3</h2></div>
+      <div id="four" class="num" data-value="4"><h2>4</h2></div>
+      <div id="five" class="num" data-value="5"><h2>5</h2></div>
+      <div id="six" class="num" data-value="6"><h2>6</h2></div>
+      <div id="seven" class="num" data-value="7"><h2>7</h2></div>
+      <div id="eight" class="num" data-value="8"><h2>8</h2></div>
+      <div id="nine" class="num" data-value="9"><h2>9</h2></div>
+      <div id="zero" class="num" data-value="0"><h2>0</h2></div>
+      <div id="point" class="num" data-value="."><h2>.</h2></div>
+      <div id="equal"><h2>=</h2></div>
+    </div>
+    <div id="signs">
+      <div id="add" class="sign"><h2>+</h2></div>
+      <div id="sub" class="sign"><h2>-</h2></div>
+      <div id="multi" class="sign"><h2>x</h2></div>
+      <div id="div" class="sign"><h2>/</h2></div>
+    </div>
+  </div>
+  <script>
+    const cells = document.getElementsByClassName('num');
+    const main = document.getElementById('main');
+    const expression = document.getElementById('expression');
+
+    const clear = document.getElementById('clear');
+    clear.addEventListener('click', clearAll);
+    const sum = document.getElementById('add');
+    sum.addEventListener('click', add);
+    const sub = document.getElementById('sub');
+    sub.addEventListener('click', subtract);
+    const multi = document.getElementById('multi');
+    multi.addEventListener('click', multiply);
+    const div = document.getElementById('div');
+    div.addEventListener('click', divide);
+    const equal = document.getElementById('equal');
+    equal.addEventListener('click', operator);
+    const erase = document.getElementById('del');
+    erase.addEventListener('click', del);
+    const point = document.getElementById('point');
+    point.addEventListener('click', addPoint);
+
+    let val = document.getElementById('main').getAttribute('data-value');
+    let sign = "";
+    let first = "";
+    let second = "";
+    let results = "";
+    let chain = "";
+
+    for (let i = 0; i < 10; i++) {
+      cells[i].addEventListener('click', function(e) {
+        val += e.currentTarget.getAttribute('data-value');
+        main.innerHTML = val;
+      });
+    }
+
+    function del() {
+      main.textContent = main.textContent.toString().slice(0, -1);
+      val = main.textContent;
+    }
+
+    function clearValue() {
+      val = "";
+      main.innerHTML = `0`;
+    }
+
+    function clearAll() {
+      val = "";
+      first = "";
+      second = "";
+      results = "";
+      chain = "";
+      main.innerHTML = `0`;
+      expression.innerHTML = `0`;
+    }
+
+    function addPoint() {
+      if (main.textContent.includes('.')) {
+        return;
+      } else if (val == "") {
+        main.textContent = '0.';
+        val = main.textContent;
+        return;
+      }
+      main.textContent += '.';
+      val = main.textContent;
+    }
+
+    function add() {
+      if (results != "" && chain == "" && val != "") {
+        first = results;
+        sign = '+';
+        clearValue();
+        expression.innerHTML = `${results} ${sign}`;
+        return;
+      } else if (first != "" && val != "") {
+        chaining();
+        sign = '+';
+        expression.innerHTML = `${chain} ${sign}`;
+        clearValue();
+        return;
+      } else if (val != "") {
+        first = val;
+        sign = '+';
+        expression.innerHTML = `${first} ${sign}`;
+        clearValue();
+      }
+      sign = '+';
+    }
+
+    function subtract() {
+      if (results != "" && chain == "" && val != "") {
+        first = results;
+        sign = '-';
+        clearValue();
+        expression.innerHTML = `${results} ${sign}`;
+        return;
+      } else if (first != "" && val != "") {
+        chaining();
+        sign = '-';
+        expression.innerHTML = `${chain} ${sign}`;
+        clearValue();
+        return;
+      } else if (val != "") {
+        first = val;
+        sign = '-';
+        expression.innerHTML = `${first} ${sign}`;
+        clearValue();
+      }
+      sign = '-';
+    }
+
+    function multiply() {
+      if (results != "" && chain == "" && val != "") {
+        first = results;
+        sign = '*';
+        clearValue();
+        expression.innerHTML = `${results} ${sign}`;
+        return;
+      } else if (first != "" && val != "") {
+        chaining();
+        sign = '*';
+        expression.innerHTML = `${chain} ${sign}`;
+        clearValue();
+        return;
+      } else if (val != "") {
+        first = val;
+        sign = '*';
+        expression.innerHTML = `${first} ${sign}`;
+        clearValue();
+      }
+      sign = '*';
+    }
+
+    function divide() {
+      if (results != "" && chain == "" && val != "") {
+        first = results;
+        sign = '/';
+        clearValue();
+        expression.innerHTML = `${results} ${sign}`;
+        return;
+      } else if (first != "" && val != "") {
+        chaining();
+        sign = '/';
+        expression.innerHTML = `${chain} ${sign}`;
+        clearValue();
+        return;
+      } else if (val != "") {
+        first = val;
+        sign = '/';
+        expression.innerHTML = `${first} ${sign}`;
+        clearValue();
+      }
+      sign = '/';
+    }
+
+    function chaining() {
+      if (chain == "") {
+        chain = first;
+        if (sign == '+') {
+          chain = Number(chain) + Number(val);
+        } else if (sign == '-') {
+          chain = Number(chain) - Number(val);
+        } else if (sign == '*') {
+          chain = Number(chain) * Number(val);
+        } else if (sign == '/') {
+          chain = Number(chain) / Number(val);
+        }
+      } else {
+        if (sign == '+') {
+          chain = Number(chain) + Number(val);
+        } else if (sign == '-') {
+          chain = Number(chain) - Number(val);
+        } else if (sign == '*') {
+          chain = Number(chain) * Number(val);
+        } else if (sign == '/') {
+          chain = Number(chain) / Number(val);
+        }
+      }
+    }
+
+    function operator() {
+      second = val;
+      if (chain == "") {
+        if (sign == '+') {
+          results = Number(first) + Number(second);
+        } else if (sign == '-') {
+          results = Number(first) - Number(second);
+        } else if (sign == '*') {
+          results = Number(first) * Number(second);
+        } else if (sign == '/') {
+          results = Number(first) / Number(second);
+        }
+        expression.innerHTML = `${first} ${sign} ${second}`;
+      } else if (chain != "") {
+        if (sign == '+') {
+          results = Number(chain) + Number(second);
+        } else if (sign == '-') {
+          results = Number(chain) - Number(second);
+        } else if (sign == '*') {
+          results = Number(chain) * Number(second);
+        } else if (sign == '/') {
+          results = Number(chain) / Number(second);
+        }
+        expression.innerHTML = `${chain} ${sign} ${second}`;
+      }
+      main.innerHTML = results;
+    }
+
+    // Funcionalidad para el botón de cerrar
+    document.getElementById('close-btn').addEventListener('click', function() {
+      // Intenta cerrar la ventana si fue abierta por script
+      window.close();
+      // Si está en un iframe, avisa al padre para que cierre la ventana
+      if (window.parent !== window) {
+        window.parent.postMessage('close-calculator', '*');
+      }
+    });
+  </script>
+</body>
+</html>

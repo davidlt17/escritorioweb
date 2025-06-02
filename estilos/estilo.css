@@ -6,16 +6,7 @@ body {
 
 }
 
-#desktop {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start; /* <-- Esto los alinea a la izquierda */
-    align-items: flex-start;     /* Opcional: los pega arriba también */
-    height: calc(100vh - 50px); /* Ajusta el alto para que no cubra el taskbar */
-    gap: 24px; /* Ajusta el espacio entre iconos */
-    padding: 20px;   /* Opcional, para separar del borde */
-}
+
 
 #taskbar {
     position: fixed;
@@ -38,12 +29,12 @@ body {
     align-items: center;
     justify-content: flex-start;
     padding: 0;
-    margin: 20px;
-    width: 64px;
-    height: 64px;
+    margin: 8px 8px 0 0;
+    width: 80px;
+    height: 90px;
     text-align: left;
     font-size: smaller;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: box-shadow 0.15s, transform 0.15s;
 }
 
 .icon:hover {
@@ -106,4 +97,177 @@ body {
     color: #333;
     margin-left: 4px;
     user-select: none;
+}
+
+.draggable {
+    cursor: grab;
+    /* Puedes poner valores iniciales si quieres */
+    /* top: 40px; left: 40px; */
+}
+
+
+
+#desktop {
+    display: grid;
+    grid-template-columns: repeat( auto-fill, 80px );
+    grid-auto-rows: 90px;
+    gap: 16px;
+    grid-auto-flow: column;
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 48px);
+    padding: 16px;
+    /* --- NUEVO --- */
+    grid-template-rows: repeat(6, 90px); /* 6 filas visibles, ajusta según tu pantalla */
+}
+
+
+.window {
+  position: absolute;
+  background: #f0f0f0;
+  border: 2px solid #808080;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-family: "Tahoma", sans-serif;
+  border-top: 2px solid #dfdfdf;
+  border-left: 2px solid #dfdfdf;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  width: fit-content;
+  height: fit-content;
+}
+
+.title-bar {
+  height: 30px;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  cursor: move;
+  user-select: none;
+}
+
+.content {
+  
+  background: #ffffff;
+  width: fit-content;
+}
+
+iframe {
+  border: none;
+  background: #ffffff;
+  display: block;
+  overflow: auto; /* Permite desplazamiento si el contenido es más grande */
+}
+
+.notepad-module {
+  background: #BFBFBF;
+  display: block;
+  min-height: 100px;
+  width: 100%;
+  margin: auto;
+  padding: 4px;
+  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.75);
+  border: 1.4px solid white;
+  box-sizing: border-box;
+}
+
+.notepad-bar {
+  width: 100%;
+  background: #01007A;
+  height: 23px;
+  display: flex;
+  align-items: center;
+}
+
+.notepad-title {
+  color: white;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  padding-left: 5px;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.notepad-controls {
+  display: flex;
+  height: 100%;
+}
+
+.notepad-minimize, .notepad-maximize, .notepad-exit {
+  padding: 3px 5px;
+  display: flex;
+  align-items: center;
+}
+
+.button-minimize, .button-maximize, .button-exit {
+  background: #BFBFBF;
+  height: 100%;
+  width: 19px;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-exit {
+  font-size: 12px;
+}
+
+.icon-maximize {
+  border-bottom: 1px solid black;
+  border-top: 3px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  height: 80%;
+  width: 80%;
+}
+
+.icon-minimize {
+  border-bottom: 2px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.notepad-settings {
+  width: 100%;
+  display: flex;
+  margin: 5px 0;
+}
+
+.settings-text {
+  padding-right: 15px;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.notepad-content {
+  height: fit-content; /* Ajustado para encajar dentro de la ventana de 620px */
+  width: fit-content%;
+  background: white;
+  border: 1.2px solid black;
+  border-radius: 1px;
+  overflow: auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.notepad-content textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  background: transparent;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.notepad-content textarea:focus {
+  outline: none;
 }
