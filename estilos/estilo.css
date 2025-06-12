@@ -1,8 +1,16 @@
+html {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
     background-color: #736cd4;
     font-family: Arial, sans-serif;
     height: 100vh;
     margin: 0;
+    overflow: hidden;
 
 }
 
@@ -136,42 +144,8 @@ body {
   height: fit-content;
 }
 
-.title-bar {
-  height: 30px;
-  background: linear-gradient(to right, #000080, #1084d0);
-  color: white;
-  font-weight: bold;
-  padding: 5px;
-  cursor: move;
-  user-select: none;
-}
-
-.content {
-  
-  background: #ffffff;
-  width: fit-content;
-}
-
-iframe {
-  border: none;
-  background: #ffffff;
-  display: block;
-  overflow: auto; /* Permite desplazamiento si el contenido es más grande */
-}
-
-.notepad-module {
-  background: #BFBFBF;
-  display: block;
-  min-height: 100px;
-  width: 100%;
-  margin: auto;
-  padding: 4px;
-  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.75);
-  border: 1.4px solid white;
-  box-sizing: border-box;
-}
-
-.notepad-bar {
+/* Barra superior de la ventana */
+.window-bar {
   width: 100%;
   background: #01007A;
   height: 23px;
@@ -179,7 +153,7 @@ iframe {
   align-items: center;
 }
 
-.notepad-title {
+.window-title {
   color: white;
   letter-spacing: 0.5px;
   word-spacing: 0.5px;
@@ -188,12 +162,12 @@ iframe {
   flex-grow: 1;
 }
 
-.notepad-controls {
+.window-controls {
   display: flex;
   height: 100%;
 }
 
-.notepad-minimize, .notepad-maximize, .notepad-exit {
+.window-minimize, .window-maximize, .window-exit {
   padding: 3px 5px;
   display: flex;
   align-items: center;
@@ -231,7 +205,8 @@ iframe {
   height: 80%;
 }
 
-.notepad-settings {
+/* Menú de opciones (si lo usas) */
+.window-settings {
   width: 100%;
   display: flex;
   margin: 5px 0;
@@ -245,9 +220,10 @@ iframe {
   text-decoration: underline;
 }
 
-.notepad-content {
-  height: fit-content; /* Ajustado para encajar dentro de la ventana de 620px */
-  width: fit-content%;
+/* Contenido de la ventana */
+.window-content {
+  height: fit-content;
+  width: fit-content;
   background: white;
   border: 1.2px solid black;
   border-radius: 1px;
@@ -256,7 +232,8 @@ iframe {
   box-sizing: border-box;
 }
 
-.notepad-content textarea {
+/* Si usas textarea dentro de window-content */
+.window-content textarea {
   width: 100%;
   height: 100%;
   border: none;
@@ -268,6 +245,111 @@ iframe {
   margin: 0;
 }
 
-.notepad-content textarea:focus {
+.window-content textarea:focus {
   outline: none;
 }
+
+.minimized-window {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  min-width: 110px;
+  max-width: 180px;
+  background: linear-gradient(to bottom, #e4e4e4 80%, #bdbdbd 100%);
+  border: 2px solid #b0b0b0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #808080;
+  border-right: 2px solid #808080;
+  border-radius: 4px 4px 0 0;
+  margin-right: 8px;
+  margin-top: 4px;
+  padding: 0 14px;
+  font-family: "Tahoma", Arial, sans-serif;
+  font-size: 1rem;
+  color: #222;
+  box-shadow: 1px 2px 2px rgba(0,0,0,0.10);
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.minimized-window:hover {
+  background: linear-gradient(to bottom, #d4d0c8 80%, #bdbdbd 100%);
+  box-shadow: 0 2px 8px 0 rgba(60,60,120,0.13);
+  color: #000080;
+  border-top: 2px solid #f3f3f3;
+}
+
+.taskbar-open {
+    background: linear-gradient(to bottom, #d4d0c8 80%, #bdbdbd 100%);
+    color: #000080;
+    border-top: 2px solid #f3f3f3;
+    position:absolute;
+    z-index: 1001;
+    bottom: 3%;
+    left: 0;
+    width: 220px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 2px;
+
+}
+
+
+
+  .start-button {
+    background: #000080; /* Azul oscuro */
+    color: #FFFFFF;
+    padding: 4px 8px;
+    border: 1px solid #000000;
+    cursor: pointer;
+    margin-right: 4px;
+    display: inline-block;
+  }
+
+  
+
+  .quick-launch {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Espacio entre tarjetas */
+    box-sizing: border-box;
+  }
+
+  .taskbar-link, .taskbar-credit, .taskbar-about {
+    background: #D3D3D3; /* Gris claro */
+    border: 2px solid #000000;
+    padding: 4px 8px;
+    cursor: pointer;
+    text-align: center;
+    min-width: 120px; /* Ancho mínimo para que se vean como tarjetas */
+    display: inline-block;
+    text-decoration: none;
+    color: #000000;
+  }
+
+  .taskbar-link:hover, .taskbar-credit:hover, .taskbar-about:hover {
+    background: #C0C0C0; /* Cambio sutil al pasar el ratón */
+    border-color: #000080;
+  }
+
+  .tray {
+    background: #D3D3D3;
+    border: 2px solid #000000;
+    padding: 4px 8px;
+    display: inline-block;
+  }
+
+  .fa-volume-up {
+    color: #000000;
+  }
+
+  .tray:hover {
+    background: #C0C0C0;
+    border-color: #000080;
+  }

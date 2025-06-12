@@ -1,0 +1,372 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html>
+<head>
+  <title>Retro Terminal</title>
+  <!-- Dependencias de React -->
+  <script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.16.4/babel.min.js"></script>
+  <!-- Dependencia de jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    html, body, body * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+    }
+
+    body *::selection {
+      color: black;
+      background: white;
+    }
+
+    #terminal {
+      box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.25);
+      border-radius: 3px;
+    }
+
+    #terminal-titlebar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 24px;
+      font-family: 'Open Sans', 'Segoe UI', Calibri, sans-serif;
+      font-size: 11px;
+      color: black;
+      backdrop-filter: invert(0.2) saturate(150%);
+      border-radius: 3px 3px 0px 0px;
+      display: none;
+    }
+
+    #terminal-body {
+      padding: 5px;
+      flex-shrink: auto;
+      width: 560px;
+      max-width: 560px;
+      height: 250px;
+      max-height: 250px;
+      font-family: 'Inconsolata', monospace;
+      font-size: 14px;
+      color: #dddddd;
+      background-color: #111111;
+      border-radius: 0px 0px 3px 3px;
+      overflow-y: auto;
+      scrollbar-width: none;      /* Firefox */
+      -ms-overflow-style: none;   /* IE y Edge */
+    }
+    #terminal-body::-webkit-scrollbar {
+      display: none;              /* Chrome, Safari y Opera */
+    }
+
+    #commandline {
+      display: flex;
+      flex-direction: row;
+      color: inherit;
+    }
+
+    .posted {
+      color: inherit;
+    }
+
+    .prompt {
+      display: inline-block;
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      background: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div id="App"></div>
+  <script type="text/babel">
+    class Terminal extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          history: []
+        };
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+      }
+
+      handleKeyUp(e) {
+        if (e.keyCode === 13) {
+          let input = e.target.value;
+          let split = input.split(' ');
+          e.target.value = '';
+          this.log(input);
+          executeCommand(this, split.length, split);
+        }
+      }
+
+      log(message) {
+        this.setState(function(state, props) {
+          return {
+            history: [...state.history, message]
+          }
+        });
+        let div = document.getElementById("terminal-body");
+        div.scrollTop = div.scrollHeight;
+      }
+
+      clear() {
+        this.setState({
+          history: []
+        });
+      }
+
+      render() {
+        const history = this.state.history.map((entry) => <div className="posted">{entry}</div>);
+        return (
+          <div id="terminal">
+            <div id="terminal-titlebar">
+            </div>
+            <div id="terminal-body">
+              {history}
+              <div id="commandline">
+                C:\><input type="text" className="prompt" onKeyUp={this.handleKeyUp}/>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<Terminal />, document.getElementById('App'));
+
+    // Auto-focus prompt on Click event
+    $('#terminal').on('click', function() {
+      $('.prompt').focus();
+    });
+
+    // Auto-focus prompt input on Keydown event
+    $(document).keydown(function() {
+      $(".prompt").focus();
+    });
+
+    const commands = {
+      "help": "display the command list, or get help with a specific command. (syntax: 'help [argument]')",
+      "clear": "clears everything from the console.",
+      "color": "changes the color of the terminal text. (syntax: 'color [color]')",
+      "bgcolor": "changes the background of the screen. (syntax: 'bgcolor [color]')",
+      "wincolor": "changes the background of the screen. (syntax: 'wincolor [color]')",
+      "dir": "displays the files contained in the database",
+      "read": "displays the contents of a file (syntax: 'read [filename])",
+      "write": "writes a file with the specified contents (syntax: 'write [filename] [contents]')",
+      "del": "erases a file from the database (syntax: 'del [filename]')",
+      "run": "interprets a stored file as javascript code (syntax: 'run [filename]')",
+      "echo": "outputs directly to the terminal (syntax: 'echo [text]')",
+      "rps": "Play a round of Rock, Paper, Scissors (syntax: 'rps [rock/paper/scissors]')"
+    };
+
+    let files = {
+      "hello.txt": "Hello world!",
+    };
+
+    function readFile(fileName) {
+      if (fileName in files) {
+        return files[fileName];
+      } else {
+        console.log('file not found');
+        throw new Error("File '" + fileName + "' not found.");
+      }
+    }
+
+    function writeFile(name, contents) {
+      console.log('writefile ' + name + ' ' + contents);
+      files[name] = contents;
+    }
+
+    function executeCommand(terminal, argc, argv) {
+      switch (argv[0]) {
+        case "clear":
+          terminal.clear();
+          console.clear();
+          break;
+
+        case "help":
+          if (argc < 2) {
+            terminal.log('commands: ' + Object.keys(commands).join(', '));
+          } else {
+            if (argv[1] in commands) {
+              terminal.log(argv[1] + ": " + commands[argv[1]]);
+            } else {
+              terminal.log("Command '" + argv[1] + "' not recognized.");
+            }
+          }
+          break;
+
+        case "color":
+          if (argc < 2) {
+            terminal.log("Error: No color specified.");
+          } else {
+            terminal.log("Setting color to " + argv[1]);
+            $("#terminal-body").css("color", argv[1]);
+          }
+          break;
+
+        case "bgcolor":
+          if (argc < 2) {
+            terminal.log("Error: No color specified.");
+          } else {
+            terminal.log("Setting background color to " + argv[1]);
+            $("#terminal-body").css("background-color", argv[1]);
+          }
+          break;
+
+        case "wincolor":
+          if (argc < 2) {
+            terminal.log("Error: No color specified.");
+          } else {
+            terminal.log("Setting window color to " + argv[1]);
+            $("body").css("background-color", argv[1]);
+          }
+          break;
+
+        case "muffin":
+          setInterval(function() {
+            var muffins = "Meow ".repeat(Math.floor(Math.random() * 20));
+            terminal.log(muffins);
+          }, 1000);
+          break;
+
+        case "dir":
+          if (Object.keys(files).length < 1) {
+            terminal.log("There are no files.");
+          } else {
+            let fileNames = Object.keys(files);
+            terminal.log(fileNames.join(', '));
+          }
+          break;
+
+        case "read":
+          try {
+            terminal.log(readFile(argv[1]));
+          } catch(e) {
+            terminal.log(e.toString());
+          }
+          break;
+
+        case "write":
+          if (argc < 2) {
+            terminal.log("Error: No file specified.");
+          } else {
+            let fileName = argv[1];
+            let fileContents = argv.slice(2).join(' ');
+            writeFile(fileName, fileContents);
+            terminal.log("Wrote to " + fileName);
+          }
+          break;
+
+        case "run":
+          terminal.log("Executing program '" + argv[1] + "'...");
+          terminal.log(eval(readFile(argv[1])));
+          break;
+
+        case "del":
+          if (argv[1] in files) {
+            delete files[argv[1]];
+            terminal.log("Deleted " + argv[1]);
+          } else {
+            terminal.log("Error: File not found.");
+          }
+          break;
+
+        case "echo":
+          let message = argv.slice(1).join(' ');
+          terminal.log(message);
+          break;
+
+        case "rps":
+          if (argc == 1) {
+            terminal.log("No choice specified. (syntax: rps [rock/paper/scissors])");
+            break;
+          }
+          let playerChoice = argv[1].toLowerCase();
+          terminal.log("You chose: " + playerChoice);
+          let cpuChoice = Math.random();
+          if (cpuChoice <= 0.33) cpuChoice = "rock";
+          else if (cpuChoice <= 0.66) cpuChoice = "paper";
+          else cpuChoice = "scissors";
+          terminal.log("CPU chose: " + cpuChoice);
+          switch(playerChoice) {
+            case 'rock':
+              if (cpuChoice === "rock") terminal.log("It's a tie!");
+              else if (cpuChoice === "paper") terminal.log("CPU wins.");
+              else terminal.log("You win!");
+              break;
+            case 'paper':
+              if (cpuChoice === "paper") terminal.log("It's a tie!");
+              else if (cpuChoice === "rock") terminal.log("You win!");
+              else terminal.log("CPU wins.");
+              break;
+            case 'scissors':
+              if (cpuChoice === "scissors") terminal.log("It's a tie!");
+              else if (cpuChoice === "rock") terminal.log("CPU wins.");
+              else terminal.log("You win!");
+              break;
+            default:
+              terminal.log("Invalid choice. (syntax: rps [rock/paper/scissors])");
+              break;
+          }
+          break;
+
+        default:
+          terminal.log("Command '" + argv[0] + "' not recognized.");
+          break;
+      }
+    }
+  </script>
+</body>
+</html>

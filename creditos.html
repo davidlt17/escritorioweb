@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; padding: 0; font-family: 'VT323', monospace; background: #C0C0C0; }
+    .window-module { width: 400px; height: 300px; border: 2px solid #000080; }
+    .window-bar { background: #000080; padding: 2px; display: flex; justify-content: space-between; border-bottom: 2px solid #000000; }
+    .window-title { color: #FFFFFF; padding: 2px 5px; }
+    .window-controls { display: flex; }
+    .window-close { background: #C0C0C0; border: 1px solid #000000; cursor: pointer; padding: 0 5px; }
+    .window-settings { background: #D3D3D3; padding: 2px; display: flex; justify-content: space-around; }
+    .settings-text { padding: 2px 5px; }
+    .underline { text-decoration: underline; }
+    .window-content { padding: 5px; }
+    textarea { width: 100%; height: 80%; border: none; background: #FFFFFF; resize: none; }
+  </style>
+</head>
+<body>
+  <div class="window-module">
+    <div class="window-bar">
+      <div class="window-title">Programs - Notepad (Créditos)</div>
+      <div class="window-controls">
+        <button class="window-close" onclick="window.parent.document.querySelector('iframe').remove();">❌</button>
+      </div>
+    </div>
+    <div class="window-settings">
+      <div class="settings-text"><span class="underline">F</span>ile</div>
+      <div class="settings-text"><span class="underline">E</span>dit</div>
+      <div class="settings-text"><span class="underline">S</span>earch</div>
+      <div class="settings-text"><span class="underline">H</span>elp</div>
+    </div>
+    <div class="window-content">
+      <textarea readonly>Terminal: https://codepen.io/TheOnlyZac/pen/pyxmQZ
+notepad: https://codepen.io/sadcry/pen/WGqpKx
+calculadora: https://codepen.io/sp4c3junk/pen/YzNbOrd
+file manager inspo: https://codepen.io/VoidCode/pen/vpZbNy
+reproductor de musica: https://codepen.io/maxew33/pen/XWRvWdY
+flying politics by Javi Navarro, un gran compañero, mira su trabajo en: https://portfoliojaviernavarro.netlify.app/</textarea>
+    </div>
+  </div>
+</body>
+</html>

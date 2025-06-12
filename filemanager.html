@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Manager - Retro XP/98 Style</title>
+  <!-- Font Awesome para los íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Fuente retro simulada (similar a MS Sans Serif) -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      color: #000080; /* Azul oscuro típico de Windows */
+      font-family: 'VT323', monospace;
+    }
+
+    body {
+      background: #008080; /* Verde azulado de fondo de Windows 98 */
+    }
+
+    .containerFM {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .fileManager {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #000080;
+      background: #C0C0C0; /* Gris claro de Windows XP/98 */
+    }
+
+    .top {
+      width: 100%;
+      display: flex;
+      background: #000080; /* Barra superior azul */
+      border-bottom: 2px solid #000000;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+      padding: 2px;
+    }
+
+    .navigation,
+    .current,
+    .tools,
+    .exit {
+      padding: 2px;
+      margin: 2px 0;
+      font-size: 16px;
+      display: flex;
+    }
+
+    .navigation {
+      position: absolute;
+      left: 5px;
+    }
+
+    .current {
+      position: absolute;
+      left: 60px;
+    }
+
+    .tools {
+      margin-right: 60px;
+    }
+
+    .exit {
+      margin-right: 5px;
+    }
+
+    i {
+      cursor: pointer;
+      background: #C0C0C0; /* Fondo gris claro para botones */
+      color: #000000;
+      padding: 2px 5px;
+      margin: 0 1px;
+      border: 1px solid #000000;
+      border-radius: 2px;
+    }
+
+    .navigation i:first-child {
+      border-radius: 2px 0 0 2px;
+    }
+
+    .navigation i:last-child {
+      border-radius: 0 2px 2px 0;
+    }
+
+    .current i:first-child {
+      border-radius: 2px 0 0 2px;
+    }
+
+    .current i:nth-child(2) {
+      border-radius: 0;
+      background: none;
+      border: none;
+      padding: 2px 10px;
+    }
+
+    .current i:last-child {
+      border-radius: 0 2px 2px 0;
+    }
+
+    .tools i:first-child {
+      border-radius: 2px 0 0 2px;
+    }
+
+    .tools i:last-child {
+      border-radius: 0 2px 2px 0;
+    }
+
+    .exit i {
+      padding: 2px;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #000000;
+      margin: 0;
+    }
+
+    .mid {
+      width: 100%;
+      background: #C0C0C0;
+      display: flex;
+    }
+
+    .sideBar {
+      width: 30%;
+      background: #D3D3D3; /* Gris más claro para la barra lateral */
+      display: flex;
+      flex-direction: column;
+      font-size: 16px;
+      padding: 5px;
+      border-right: 2px solid #000080;
+    }
+
+    .sideBar i {
+      color: #000080;
+      margin: 5px 0;
+      padding: 5px;
+    }
+
+    .sideBar i:hover {
+      background: #A9A9A9; /* Gris medio al pasar el mouse */
+    }
+
+    .sideBar hr {
+      margin: 10px 0;
+    }
+
+    .files {
+      width: 70%;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+      align-content: flex-start;
+      background: #FFFFFF; /* Fondo blanco para el área de archivos */
+    }
+
+    .file {
+      color: #000080;
+      margin: 10px;
+      text-align: center;
+      padding: 5px;
+      border: 1px solid #000000;
+      background: #FFFFFF;
+      width: 80px;
+      height: 80px;
+    }
+
+    .file:hover {
+      background: #D3D3D3; /* Cambio de color al pasar el mouse */
+    }
+
+    .file i {
+      color: #000080;
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+
+    .file .fa-folder {
+      color: #0000FF; /* Azul para carpetas */
+    }
+
+    .file .fa-file-text,
+    .file .fa-file-pdf-o,
+    .file .fa-file-word-o,
+    .file .fa-file-archive-o {
+      color: #008000; /* Verde para archivos */
+    }
+  </style>
+</head>
+<body>
+  <div class="containerFM">
+    <div class="fileManager">
+
+      <div class="mid">
+        <div class="sideBar">
+          <i class="fa fa-home"> Home</i>
+          <i class="fa fa-desktop"> Desktop</i>
+          <i class="fa fa-envelope"> Documents</i>
+          <i class="fa fa-arrow-circle-o-down"> Downloads</i>
+          <i class="fa fa-music"> Music</i>
+          <i class="fa fa-picture-o"> Pictures</i>
+          <i class="fa fa-video-camera"> Videos</i>
+          <i class="fa fa-trash"> Trash</i>
+          <hr>
+          <i class="fa fa-plus"> Other</i>
+        </div>
+        <div class="files">
+          <div class="file">
+            <i class="fa fa-folder"></i><br> Folder 1
+          </div>
+          <div class="file">
+            <i class="fa fa-folder"></i><br> Folder 2
+          </div>
+          <div class="file">
+            <i class="fa fa-folder"></i><br> Folder 3
+          </div>
+          <div class="file">
+            <i class="fa fa-folder"></i><br> Folder 4
+          </div>
+          <div class="file">
+            <i class="fa fa-folder"></i><br> Folder 5
+          </div>
+          <div class="file">
+            <i class="fa fa-file-text"></i><br> File 1.txt
+          </div>
+          <div class="file">
+            <i class="fa fa-file-pdf-o"></i><br> File2.pdf
+          </div>
+          <div class="file">
+            <i class="fa fa-file-word-o"></i><br> File3.doc
+          </div>
+          <div class="file">
+            <i class="fa fa-file-archive-o"></i><br> File3.zip
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
