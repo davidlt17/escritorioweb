@@ -229,6 +229,22 @@ function createWindow(app) {
           </div>
         </div>`;
       break;
+    case 'minecraft':
+      windowContent = `
+        <div class="window-module">
+          <div class="window-bar">
+            <div class="window-title">Minecraft Classic</div>
+            <div class="window-controls">
+              <div class="window-minimize"><div class="button-minimize"><div class="icon-minimize"></div></div></div>
+              <div class="window-maximize"><div class="button-maximize"><div class="icon-maximize"></div></div></div>
+              <div class="window-exit"><button class="window-close button-exit">❌</button></div>
+            </div>
+          </div>
+          <div class="window-content" style="padding:0;">
+            <iframe src="https://classic.minecraft.net/" width="900" height="700" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>`;
+      break;
   }
 
   if (windowContent) {

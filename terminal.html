@@ -172,10 +172,16 @@
           <div id="terminal">
             <div id="terminal-titlebar">
             </div>
+           
             <div id="terminal-body">
+                <p>
+                 **Escribe help para ver los comandos disponibles**
+                </p>
               {history}
               <div id="commandline">
-                C:\><input type="text" className="prompt" onKeyUp={this.handleKeyUp}/>
+               
+                C:\&gt;
+                <input type="text" className="prompt" onKeyUp={this.handleKeyUp}/>
               </div>
             </div>
           </div>
