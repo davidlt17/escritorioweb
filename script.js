@@ -385,3 +385,17 @@ flying politics by Javi Navarro, un gran compañero, mira su trabajo en: https:/
   }
   return originalContent;
 };
+
+// Lógica para mostrar la hora actual en la taskbar
+function updateClock() {
+  const reloj = document.querySelector('.reloj span');
+  if (reloj) {
+    const now = new Date();
+    // Formato HH:MM (24h)
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    reloj.textContent = `${hours}:${minutes}`;
+  }
+}
+setInterval(updateClock, 1000);
+updateClock();
